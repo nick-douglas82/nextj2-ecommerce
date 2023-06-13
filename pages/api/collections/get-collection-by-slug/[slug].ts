@@ -1,9 +1,14 @@
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
+import { VercelRequest, VercelResponse } from '@vercel/node'
 const prisma = new PrismaClient()
 
-const getCollectionBySlug = async (event: any) => {
+const getCollectionBySlug = async (
+    request: VercelRequest,
+    response: VercelResponse
+) => {
+    const query = request.query.slug as string | Prisma.StringFilter | undefined
     const collection = await prisma.category.findFirst({
-        where: { slug: event?.context?.params?.slug },
+        where: { slug: query },
         include: {
             products: {
                 select: {
@@ -15,7 +20,12 @@ const getCollectionBySlug = async (event: any) => {
             },
         },
     })
-    return collection
+
+    if (collection) {
+        response.status(200).json(collection)
+    } else {
+        response.status(404).json({})
+    }
 }
 
 export default getCollectionBySlug
