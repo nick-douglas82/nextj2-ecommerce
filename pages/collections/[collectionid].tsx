@@ -1,7 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next';
 import { apiFetch } from '../../lib/api/api';
-import { useRouter } from 'next/router';
 import { Collection } from '@/types/Collection';
+import ProductItem from '@/components/Products/ProductItem';
 
 type ServerSideResponse = {
     collection: Collection | null
@@ -62,14 +62,9 @@ const Collection: NextPage<InferGetServerSidePropsType<typeof getServerSideProps
                 <div
                     className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
                 >
-                    {collection?.products.map((product) => (
-                        <div key={product.id}>{product?.name}</div>
+                    {collection?.products.map((product, index) => (
+                        <ProductItem product={product} key={`${product.name}_${index}`} />
                     ))}
-                    {/* <ProductItem
-                    v-for="product in collection.products"
-                    :product="product"
-                    :key="product.id"
-                /> */}
                 </div>
             </section>
         </main>

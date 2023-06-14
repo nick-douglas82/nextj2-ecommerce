@@ -1,7 +1,35 @@
+import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { apiFetch } from '../lib/api/api';
+import { Collection } from '@/types/Collection';
 
-export default function Home() {
+type ServerSideResponse = {
+    collections: Collection[] | null
+}
+
+export const getServerSideProps: GetServerSideProps<ServerSideResponse> = async ({ req, query }) => {
+    let collections: null;
+
+    try {
+        collections = await apiFetch(`/api/collections/get-all-collections`);
+    } catch (error) {
+        return {
+            redirect: {
+                destination: '/error',
+                permanent: false,
+            },
+        };
+    }
+
+    return {
+        props: {
+            collections
+        }
+    }
+}
+
+const Home: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ collections }) => {
     return (
         <div className="bg-white">
             <div className="relative bg-gray-900">
@@ -61,29 +89,28 @@ export default function Home() {
                     <div
                         className="mt-10 space-y-12 lg:grid lg:grid-cols-3 lg:gap-x-8 lg:space-y-0"
                     >
-                        {/* <NuxtLink
-                        v-for="collection in collections"
-                        :key="collection.name"
-                        :to="`collections/${collection.slug}`"
-                        className="block group"
-                    >
-                        <div
-                            aria-hidden="true"
-                            className="overflow-hidden rounded-lg aspect-h-2 aspect-w-3 lg:aspect-h-6 lg:aspect-w-5 group-hover:opacity-75"
-                        >
-                            <img
-                                :src="collection.img"
-                                :alt="collection.name"
-                                className="object-cover object-center w-full h-full"
-                            />
-                        </div>
-                        <h3 className="mt-4 text-base font-semibold text-gray-900">
-                            {{ collection.name }}
-                        </h3>
-                        <p className="mt-2 text-sm text-gray-500">
-                            {{ collection.description }}
-                        </p>
-                    </NuxtLink> */}
+                        {collections && collections.map((collection) => (
+                            <Link href={`collections/${collection.slug}`} className="block group" key={collection.id}>
+                                <div
+                                    aria-hidden="true"
+                                    className="overflow-hidden rounded-lg aspect-h-2 aspect-w-3 lg:aspect-h-6 lg:aspect-w-5 group-hover:opacity-75"
+                                >
+                                    <Image
+                                        src={collection.img}
+                                        alt={collection.name}
+                                        width={400}
+                                        height={320}
+                                        className="object-cover object-center w-full h-full"
+                                    />
+                                </div>
+                                <h3 className="mt-4 text-base font-semibold text-gray-900">
+                                    {collection.name}
+                                </h3>
+                                <p className="mt-2 text-sm text-gray-500">
+                                    {collection.description}
+                                </p>
+                            </Link>
+                        ))}
                     </div>
                 </section>
 
@@ -132,3 +159,5 @@ export default function Home() {
         </div>
     )
 }
+
+export default Home
