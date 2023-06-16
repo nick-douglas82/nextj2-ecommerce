@@ -10,6 +10,7 @@ const TopBar = () => {
     useEffect(() => {
         (async () => {
             const { data: { user } } = await supabase.auth.getUser()
+
             if (user) {
                 setAuthUser(user)
             } else {

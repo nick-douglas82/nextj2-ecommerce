@@ -1,61 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
-model category {
-  id          Int        @id
-  name        String
-  description String?
-  slug        String
-  img         String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime
-  products    products[] @relation("CategoryToProducts")
+model Category {
+    id          Int        @id
+    name        String
+    description String?
+    slug        String
+    img         String
+    products    Products[]
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+
+    @@map("category")
 }
 
-model order_item {
-  id         Int       @id @default(autoincrement())
-  orderId    Int
-  productId  Int
-  quantity   Int
-  created_at DateTime? @default(now()) @db.Timestamptz(6)
-  orders     orders    @relation(fields: [orderId], references: [id])
-  products   products  @relation(fields: [productId], references: [id])
+model Products {
+    id             Int        @id
+    name           String
+    description    String?
+    notes          String?
+    price          Int
+    img            String
+    slug           String
+    variant        String
+    categories     Category[]
+    variants       Products[] @relation("ProductsVariants")
+    parentProducts Products[]  @relation("ProductsVariants")
+    orderItems     OrderItem[]
+    createdAt      DateTime   @default(now())
+    updatedAt      DateTime   @updatedAt
+    productsId     Int?
+
+    @@map("products")
 }
 
-model orders {
-  id         Int          @id @default(autoincrement())
-  userId     String       @db.Uuid
-  stripeId   String
-  name       String
-  address    String
-  postcode   String
-  city       String
-  county     String
-  country    String
-  created_at DateTime?    @default(now()) @db.Timestamptz(6)
-  order_item order_item[]
+model Orders {
+    id         Int         @id @default(autoincrement())
+    userId     String      @db.Uuid
+    stripeId   String
+    name       String
+    address    String
+    postcode   String
+    city       String
+    county     String
+    country    String
+    orderItems OrderItem[]
+    created_at DateTime?   @default(now()) @db.Timestamptz(6)
+
+    @@map("orders")
 }
 
-model products {
-  id          Int          @id
-  name        String
-  description String?
-  notes       String?
-  price       Int
-  img         String
-  slug        String
-  variant     String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime
-  productsId  Int?
-  order_item  order_item[]
-  category    category[]   @relation("CategoryToProducts")
-  products_B  products[]   @relation("ProductsVariants")
-  products_A  products[]   @relation("ProductsVariants")
+model OrderItem {
+    id         Int         @id @default(autoincrement())
+    orderId    Int
+    productId  Int
+    quantity   Int
+    order      Orders      @relation(fields: [orderId], references: [id])
+    product    Products    @relation(fields: [productId], references: [id])
+    created_at DateTime?   @default(now()) @db.Timestamptz(6)
+
+    @@map("order_item")
 }
