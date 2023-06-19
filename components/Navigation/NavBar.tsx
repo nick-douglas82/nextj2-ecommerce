@@ -7,7 +7,7 @@ import { Collection } from "@/types/Collection";
 const NavBar = () => {
     const [collections, setCollections] = useState<Collection[] | null>(null);
 
-    // TODO: Can we improve this? We're fetching the collections twice, once here and once on the main homepage
+    // TODO: Can we improve this? We're fetching the collections twice, once here and once on the main homepage & this is client side only...
     useEffect(() => {
         async function fetchCollections() {
             try {
