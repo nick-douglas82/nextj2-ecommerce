@@ -2,11 +2,27 @@ import { useState, useEffect } from 'react';
 import { useBasketState } from '@/hooks/useBasket';
 import Spinner from '@/components/Spinner'
 import { priceFormat } from '@/lib/helpers';
+import { supabase } from '@/lib/supabaseClient';
+import Link from 'next/link';
 
 const OrderSummary = () => {
     const basketState = useBasketState();
     const [basketTotal, setBasketTotal] = useState(0)
     const [basketSubTotal, setBasketSubTotal] = useState(0)
+    const [user, setUser] = useState<{} | null>(null)
+
+    useEffect(() => {
+        const getUser = async () => {
+            const {
+                data: { user },
+            } = await supabase.auth.getUser()
+
+            setUser(user)
+        }
+
+        getUser()
+    }, [])
+
 
     useEffect(() => {
         const basketSubTotal = basketState.basket.reduce((acc, product) => {
@@ -62,22 +78,20 @@ const OrderSummary = () => {
             </dl>
 
             <div className="mt-6">
-                {/* <NuxtLink
-                v-if="isBasket"
-                :to="`${!user ? '/account/login' : '/checkout'}`"
-                className="block w-full px-4 py-3 text-base font-medium text-center text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-            >
-                <template v-if="!user">Please Login to Continue</template>
-                <template v-else>Continue to Checkout</template>
-            </NuxtLink> */}
-                <button
+                <Link
+                    href={`${!user ? '/account/login' : '/checkout'}`}
+                    className="block w-full px-4 py-3 text-base font-medium text-center text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                >
+                    {!user ? 'Please Login to Continue' : 'Continue to Checkout'}
+                </Link>
+                {/* <button
                     v-if="isCheckout"
                     type="submit"
                     className="flex items-center justify-center w-full px-4 py-3 text-base font-medium text-center text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
-                    {/* <Spinner /> */}
+                    <Spinner />
                     Continue to Payment
-                </button>
+                </button> */}
             </div>
         </section>
     )

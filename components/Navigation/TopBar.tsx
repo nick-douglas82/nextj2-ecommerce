@@ -28,7 +28,7 @@ const TopBar = () => {
                     className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6"
                 >
                     {authUser ?
-                        <Link href="/account" className="text-sm font-medium text-white hover:text-gray-100">
+                        <Link href="/account/orders" className="text-sm font-medium text-white hover:text-gray-100">
                             Account
                         </Link> :
                         <Link href="/account/login" className="text-sm font-medium text-white hover:text-gray-100">

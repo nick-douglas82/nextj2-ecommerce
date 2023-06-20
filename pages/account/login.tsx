@@ -30,7 +30,6 @@ const Login = () => {
                         Sign in to your account
                     </h2>
                 </div>
-                {/* {{ user }} */}
                 <div className="grid grid-cols-2 gap-4 mt-6">
                     <button
                         className="appearance-none flex items-center justify-center gap-3 p-1.5 w-full border hover:bg-gray-100 rounded-md text-lg font-semibold"
