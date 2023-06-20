@@ -10,6 +10,7 @@ export interface Product {
     variants?: Array<ProductWithCategories>
     createdAt: string
     updatedAt: string
+    quantity: number
 }
 
 export interface Category {

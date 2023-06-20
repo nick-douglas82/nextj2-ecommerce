@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next';
 import Image from 'next/image';
 import { apiFetch } from '@/lib/api/api';
@@ -7,6 +8,7 @@ import MainLayout from '@/components/Layouts/MainLayout';
 import Breadcrumb from '@/components/Navigation/Breadcrumb';
 import { CurrencyDollarIcon, GlobeAmericasIcon } from '@heroicons/react/24/outline'
 import ProductVariants from '@/components/Products/ProductVariants';
+import { useBasketDispatch } from '@/hooks/useBasket';
 
 type ServerSideResponse = {
     product: ProductWithCategories | null
@@ -50,6 +52,19 @@ export const getServerSideProps: GetServerSideProps<ServerSideResponse> = async 
 }
 
 const ProductDetailPage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ product }) => {
+    const basketDispatch = useBasketDispatch();
+
+    const addToBasket = (product: ProductWithCategories | null) => {
+        if (product === null) {
+            return;
+        }
+
+        basketDispatch({
+            type: 'ADD_TO_BASKET',
+            product: product
+        })
+    }
+
     return (
         <MainLayout>
             <div className="bg-white">
@@ -100,7 +115,8 @@ const ProductDetailPage: NextPage<InferGetServerSidePropsType<typeof getServerSi
                             <div className="mt-8 lg:col-span-5">
                                 <button
                                     type="button"
-                                    className="flex items-center justify-center w-full px-8 py-3 mt-8 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                    className={`flex items-center justify-center w-full px-8 py-3 mt-8 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
+                                    onClick={() => addToBasket(product)}
                                 >
                                     Add to basket
                                 </button>

@@ -4,7 +4,7 @@ import Link from "next/link"
 
 type Props = {
     product: ProductWithCategories
-    variants: ProductWithCategories[] | null
+    variants: ProductWithCategories[] | undefined
 }
 
 const ProductVariants = ({ product, variants }: Props) => {
