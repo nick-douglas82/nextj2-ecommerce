@@ -1,11 +1,13 @@
 import { ProductWithCategories } from "@/types/Products";
 import React, { createContext, useContext, useReducer } from "react";
+import { addToBasket, removeFromBasket, updateProductQuantity } from '@/hooks/reducers/basketReducers';
 
-type BasketAction =
+export type BasketAction =
     | { type: 'ADD_TO_BASKET', product: ProductWithCategories }
     | { type: 'REMOVE_FROM_BASKET', product: ProductWithCategories }
+    | { type: 'UPDATE_PRODUCT_QUANTITY', product: ProductWithCategories, quantity: number }
 
-type BasketState = {
+export type BasketState = {
     basket: Array<ProductWithCategories>
     shipping: number
 }
@@ -19,42 +21,13 @@ const BasketDispatchContext = createContext<BasketDispatch | undefined>(undefine
 const basketReducer = (state: BasketState, action: BasketAction): BasketState => {
     switch (action.type) {
         case 'ADD_TO_BASKET': {
-            const updatedBasket = [...state.basket]
-            const updatedItemIndex = updatedBasket.findIndex(
-                item => item.id === action.product.id
-            )
-
-            if (updatedItemIndex < 0) {
-                updatedBasket.push({ ...action.product, quantity: 1 })
-            } else {
-
-                const updatedItem = {
-                    ...updatedBasket[updatedItemIndex]
-                };
-                if (updatedItem.quantity !== undefined) {
-                    updatedItem.quantity++;
-                    updatedBasket[updatedItemIndex] = updatedItem;
-                }
-            }
-            return { ...state, basket: updatedBasket };
+            return addToBasket(state, action);
         }
         case 'REMOVE_FROM_BASKET': {
-            const updatedBasket = [...state.basket];
-            const updatedItemIndex = updatedBasket.findIndex(
-                item => item.id === action.product.id
-            );
-            const updatedItem = {
-                ...updatedBasket[updatedItemIndex]
-            }
-            if (updatedItem.quantity !== undefined) {
-                updatedItem.quantity--;
-                if (updatedItem.quantity <= 0) {
-                    updatedBasket.splice(updatedItemIndex, 1);
-                } else {
-                    updatedBasket[updatedItemIndex] = updatedItem;
-                }
-            }
-            return { ...state, basket: updatedBasket };
+            return removeFromBasket(state, action);
+        }
+        case 'UPDATE_PRODUCT_QUANTITY': {
+            return updateProductQuantity(state, action);
         }
         default:
             throw new Error('Unhandled action type')
