@@ -5,8 +5,10 @@ import Logo from "../Icons/Logo";
 import { Collection } from "@/types/Collection";
 import { useBasketState } from "@/hooks/useBasket";
 import Basket from "@/components/Basket/Basket"
+import { useUserState } from "@/hooks/useUser";
 
 const NavBar = () => {
+    const userState = useUserState();
     const [collections, setCollections] = useState<Collection[] | null>(null);
     const basketState = useBasketState();
 
@@ -54,10 +56,12 @@ const NavBar = () => {
                             <div className="flex items-center lg:ml-8">
                                 <div className="flex space-x-8">
                                     <div className="flex">
-                                        <a href="/account" className="p-2 -m-2 text-gray-400 appearance-none hover:text-gray-500">
-                                            <span className="sr-only">Account</span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path></svg>
-                                        </a>
+                                        {userState.auth ? (
+                                            <Link href="/account/orders" className="p-2 -m-2 text-gray-400 appearance-none hover:text-gray-500">
+                                                <span className="sr-only">Account</span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path></svg>
+                                            </Link>
+                                        ) : ''}
                                     </div>
                                 </div>
                                 <span className="w-px h-6 mx-4 bg-gray-200 lg:mx-6" aria-hidden="true"></span>
