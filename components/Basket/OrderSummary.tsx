@@ -4,24 +4,27 @@ import Spinner from '@/components/Spinner'
 import { priceFormat } from '@/lib/helpers';
 import { supabase } from '@/lib/supabaseClient';
 import Link from 'next/link';
+import { useUserState } from '@/hooks/useUser';
+
 
 const OrderSummary = () => {
+    const userState = useUserState();
     const basketState = useBasketState();
     const [basketTotal, setBasketTotal] = useState(0)
     const [basketSubTotal, setBasketSubTotal] = useState(0)
-    const [user, setUser] = useState<{} | null>(null)
+    // const [user, setUser] = useState<{} | null>(null)
 
-    useEffect(() => {
-        const getUser = async () => {
-            const {
-                data: { user },
-            } = await supabase.auth.getUser()
+    // useEffect(() => {
+    //     const getUser = async () => {
+    //         const {
+    //             data: { user },
+    //         } = await supabase.auth.getUser()
 
-            setUser(user)
-        }
+    //         setUser(user)
+    //     }
 
-        getUser()
-    }, [])
+    //     getUser()
+    // }, [])
 
 
     useEffect(() => {
@@ -79,10 +82,10 @@ const OrderSummary = () => {
 
             <div className="mt-6">
                 <Link
-                    href={`${!user ? '/account/login' : '/checkout'}`}
+                    href={`${!userState.auth ? '/account/login' : '/checkout'}`}
                     className="block w-full px-4 py-3 text-base font-medium text-center text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
-                    {!user ? 'Please Login to Continue' : 'Continue to Checkout'}
+                    {!userState.auth ? 'Please Login to Continue' : 'Continue to Checkout'}
                 </Link>
                 {/* <button
                     v-if="isCheckout"

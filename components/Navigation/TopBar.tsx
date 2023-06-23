@@ -1,23 +1,9 @@
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
-import { User } from "@supabase/supabase-js";
+import { useUserState } from '@/hooks/useUser';
 
 
 const TopBar = () => {
-    const [authUser, setAuthUser] = useState<User | null>(null)
-
-    useEffect(() => {
-        (async () => {
-            const { data: { user } } = await supabase.auth.getUser()
-
-            if (user) {
-                setAuthUser(user)
-            } else {
-                setAuthUser(null)
-            }
-        })();
-    }, [])
+    const userState = useUserState();
 
     return (
         <div className="bg-gray-900">
@@ -27,7 +13,7 @@ const TopBar = () => {
                 <div
                     className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6"
                 >
-                    {authUser ?
+                    {userState.auth ?
                         <Link href="/account/orders" className="text-sm font-medium text-white hover:text-gray-100">
                             Account
                         </Link> :

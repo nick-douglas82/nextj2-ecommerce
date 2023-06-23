@@ -1,9 +1,11 @@
-import React, { MouseEventHandler } from 'react';
+import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import Image from "next/image";
 import Logo from "@/components/Icons/Logo";
+import { useRouter } from 'next/router'
+import { apiFetch } from '@/lib/api/api';
 
 const Login = () => {
+    const router = useRouter()
 
     async function signInWithGoogle() {
         const { data, error } = await supabase.auth.signInWithOAuth({
@@ -12,7 +14,7 @@ const Login = () => {
     }
 
     async function signInWithGithub() {
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        const { data, error, } = await supabase.auth.signInWithOAuth({
             provider: 'github',
         })
     }
