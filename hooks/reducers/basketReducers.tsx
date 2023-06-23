@@ -60,3 +60,7 @@ export const updateProductQuantity = (state: BasketState, action: { type: 'UPDAT
 
     return { ...state, basket: updatedBasket };
 }
+
+export const updateShipping = (state: BasketState, action: { type: 'UPDATE_SHIPPING', shipping: number }) => {
+    return { ...state, shipping: action.shipping };
+}

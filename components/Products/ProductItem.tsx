@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/types/Products";
+import { priceFormat } from "@/lib/helpers";
 
 // Types
 type ProductItemProps = {
@@ -26,7 +27,7 @@ const ProductItem = ({ product }: ProductItemProps) => {
                 {product.name}
             </h3>
             <p className="mt-1 text-lg font-medium text-gray-900">
-                {product.price}
+                {priceFormat(product.price)}
             </p>
         </Link>
     )

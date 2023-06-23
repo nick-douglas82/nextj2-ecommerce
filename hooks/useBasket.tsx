@@ -1,11 +1,12 @@
 import { ProductWithCategories } from "@/types/Products";
 import React, { createContext, useContext, useReducer } from "react";
-import { addToBasket, removeFromBasket, updateProductQuantity } from '@/hooks/reducers/basketReducers';
+import { addToBasket, removeFromBasket, updateProductQuantity, updateShipping } from '@/hooks/reducers/basketReducers';
 
 export type BasketAction =
     | { type: 'ADD_TO_BASKET', product: ProductWithCategories }
     | { type: 'REMOVE_FROM_BASKET', product: ProductWithCategories }
     | { type: 'UPDATE_PRODUCT_QUANTITY', product: ProductWithCategories, quantity: number }
+    | { type: 'UPDATE_SHIPPING', shipping: number }
 
 export type BasketState = {
     basket: Array<ProductWithCategories>
@@ -28,6 +29,9 @@ const basketReducer = (state: BasketState, action: BasketAction): BasketState =>
         }
         case 'UPDATE_PRODUCT_QUANTITY': {
             return updateProductQuantity(state, action);
+        }
+        case 'UPDATE_SHIPPING': {
+            return updateShipping(state, action);
         }
         default:
             throw new Error('Unhandled action type')
